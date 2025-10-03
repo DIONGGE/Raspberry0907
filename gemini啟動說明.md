@@ -1,22 +1,12 @@
-# Gemini 啟動說明
+# Gemini CLI 啟動說明
 
-本文件說明如何啟動 `raspberry0907` 專案。
+本文件說明如何設定 Python 環境並使用 Google Generative AI SDK 來與 Gemini API 互動，以建立您自己的 Gemini CLI 工具或腳本。
 
-## 1. 使用 Python 直譯器直接執行
+## 1. 設定開發環境
 
-這是最直接的啟動方式，適用於已安裝 Python 環境的系統。
-
-```bash
-python main.py
-```
-
-## 2. 使用虛擬環境 (Virtual Environment)
+### 1.1 建立並啟用虛擬環境
 
 建議使用虛擬環境來管理專案依賴，以避免與系統其他 Python 專案產生衝突。
-
-### 2.1 建立並啟用虛擬環境
-
-如果尚未建立虛擬環境，請執行以下指令：
 
 ```bash
 python -m venv .venv
@@ -37,57 +27,89 @@ python -m venv .venv
     .venv\Scripts\Activate.ps1
     ```
 
-### 2.2 安裝依賴 (如果有的話)
+### 1.2 安裝 Google Generative AI SDK
 
-目前 `pyproject.toml` 中沒有明確的依賴，但如果未來有新增，請在啟用虛擬環境後執行：
-
-```bash
-pip install -e .
-```
-
-### 2.3 執行專案
-
-在虛擬環境啟用後，即可執行 `main.py`：
+在虛擬環境啟用後，安裝必要的函式庫：
 
 ```bash
-python main.py
+pip install google-generativeai
 ```
 
-### 2.4 停用虛擬環境
+## 2. 取得 Gemini API 金鑰
 
-完成工作後，可以停用虛擬環境：
+要使用 Gemini API，您需要一個 API 金鑰。請按照以下步驟取得：
+
+1.  前往 [Google AI Studio](https://aistudio.google.com/)。
+2.  登入您的 Google 帳戶。
+3.  建立一個新的 API 金鑰。
+4.  複製您的 API 金鑰。
+
+## 3. 設定 API 金鑰
+
+為了安全起見，建議將 API 金鑰儲存在環境變數中，而不是直接寫在程式碼裡。
+
+*   **Linux / macOS:**
+    ```bash
+    export GOOGLE_API_KEY="您的API金鑰"
+    ```
+*   **Windows (Command Prompt):**
+    ```bash
+    set GOOGLE_API_KEY="您的API金鑰"
+    ```
+*   **Windows (PowerShell):**
+    ```bash
+    $env:GOOGLE_API_KEY="您的API金鑰"
+    ```
+    或者，您也可以在 Python 程式碼中直接設定：
+    ```python
+    import google.generativeai as genai
+    genai.configure(api_key="您的API金鑰")
+    ```
+    **注意：** 將 API 金鑰直接寫入程式碼不建議用於生產環境。
+
+## 4. 建立您的 Gemini CLI 腳本
+
+建立一個 Python 檔案 (例如 `gemini_cli.py`) 並加入以下內容：
+
+```python
+import google.generativeai as genai
+import os
+
+# 從環境變數中讀取 API 金鑰
+# 如果您選擇直接在程式碼中設定，請移除此行並取消註解下面的 genai.configure
+API_KEY = os.getenv("GOOGLE_API_KEY")
+
+if not API_KEY:
+    print("錯誤：請設定 GOOGLE_API_KEY 環境變數或在程式碼中設定 API 金鑰。")
+    exit()
+
+genai.configure(api_key=API_KEY)
+
+def chat_with_gemini(prompt):
+    model = genai.GenerativeModel('gemini-pro')
+    try:
+        response = model.generate_content(prompt)
+        return response.text
+    except Exception as e:
+        return f"與 Gemini 互動時發生錯誤: {e}"
+
+if __name__ == "__main__":
+    print("歡迎使用 Gemini CLI！輸入 'exit' 結束對話。")
+    while True:
+        user_input = input("您：")
+        if user_input.lower() == 'exit':
+            break
+        
+        response_text = chat_with_gemini(user_input)
+        print(f"Gemini：{response_text}")
+```
+
+## 5. 執行您的 Gemini CLI 腳本
+
+在啟用虛擬環境並設定好 API 金鑰後，執行您的腳本：
 
 ```bash
-deactivate
+python gemini_cli.py
 ```
 
-## 3. 使用 `pipx` (如果專案被設計為 CLI 工具)
-
-如果 `raspberry0907` 專案未來被設計為一個可執行的命令列工具，`pipx` 是一個很好的選擇，它會將專案安裝到獨立的環境中。
-
-### 3.1 安裝 `pipx` (如果尚未安裝)
-
-```bash
-python -m pip install --user pipx
-python -m pipx ensurepath
-```
-
-### 3.2 安裝專案
-
-```bash
-pipx install .
-```
-
-### 3.3 執行專案
-
-安裝後，可以直接在任何地方執行專案名稱：
-
-```bash
-raspberry0907
-```
-
-### 3.4 移除專案
-
-```bash
-pipx uninstall raspberry0907
-```
+現在您可以透過命令列與 Gemini 進行互動了！
