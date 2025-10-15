@@ -1,0 +1,14 @@
+[src/libmpg123/parse.c:skip_junk():1317] error: Giving up searching valid MPEG header after 65536 bytes of junk.
+pygame 2.1.2 (SDL 2.26.5, Python 3.11.2)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+無法載入背景音樂: mpg123_getformat: Failed to find valid MPEG data within limit on resync. (code 28)
+無法載入音效: Unable to open file 'assets/eat_sound.wav'
+Traceback (most recent call last):
+  File "/home/pi/Documents/Github/Raspberry0907/貪食蛇1/main.py", line 184, in <module>
+    main()
+  File "/home/pi/Documents/Github/Raspberry0907/貪食蛇1/main.py", line 144, in main
+    snake.move()
+  File "/home/pi/Documents/Github/Raspberry0907/貪食蛇1/main.py", line 89, in move
+    x, y = self.direction
+    ^^^^
+TypeError: cannot unpack non-iterable int object

@@ -1,17 +1,9 @@
-# Gemini Code Assistant Context
+## 虛擬環境
+- 使用uv建立皫虛擬環境
+- 所有python套件安裝請使用'uv add 套件名稱'
 
-## Project Overview
+## 工作目錄描述
+- Raspberry0907 是上課用的主要目錄
 
-This is a simple Python project for a Raspberry Pi class. The main entry point is `main.py`, which currently prints a hello message. The project is configured with a `pyproject.toml` file, which specifies Python 3.10 or greater.
-
-## Building and Running
-
-To run the project, execute the following command:
-
-```bash
-python main.py
-```
-
-## Development Conventions
-
-There are no explicit development conventions specified in the project.
+## 目前次專案的工作目錄
+- Raspberry0907/貪食蛇1
